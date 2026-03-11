@@ -23,7 +23,7 @@ jobs:
         working-directory: services
 
       - name: Build Docker image
-        run: docker build -t yourdockerhub/gym-pass-backend:latest .
+        run: docker build -t ricardo5ro/gym-pass-backend:latest .
         working-directory: services
 
       - name: Login DockerHub
