@@ -25,7 +25,8 @@ services:
     - gym_pass_network
 
   backend:
-    build: ./services
+    #build: ./services
+    image: ricardo5ro/gym-pass-backend:latest
     container_name: gym_pass_backend
     depends_on:
       - postgres
