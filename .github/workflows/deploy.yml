@@ -23,14 +23,18 @@ jobs:
         working-directory: services
 
       - name: Build Docker image
-        run: docker build -t ricardo5ro/gym-pass-backend:latest .
+        run: |
+          docker build -t ricardo5ro/gym-pass-backend:${{ github.sha }} .
+          docker tag ricardo5ro/gym-pass-backend:${{ github.sha }} ricardo5ro/gym-pass-backend:latest
         working-directory: services
 
       - name: Login DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Push image
-        run: docker push ricardo5ro/gym-pass-backend:latest
+        run: |
+          docker push ricardo5ro/gym-pass-backend:${{ github.sha }}
+          docker push ricardo5ro/gym-pass-backend:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
@@ -40,5 +44,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd gym-pass
+            export IMAGE_TAG=${{ github.sha }}
+
             sudo docker-compose pull
-            sudo docker-compose up -d
+            sudo IMAGE_TAG=${{ github.sha }} docker compose up -d
+
+            sudo docker image prune -f

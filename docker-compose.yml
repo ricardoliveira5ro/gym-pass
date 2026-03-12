@@ -26,7 +26,7 @@ services:
 
   backend:
     #build: ./services
-    image: ricardo5ro/gym-pass-backend:latest
+    image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
     container_name: gym_pass_backend
     depends_on:
       - postgres
