@@ -45,7 +45,6 @@ jobs:
           source: |
             docker-compose.yml
             nginx.conf
-            .env
           target: /home/ubuntu/gym-pass/
 
       - name: Deploy to EC2
