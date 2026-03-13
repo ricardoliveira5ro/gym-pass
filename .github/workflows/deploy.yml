@@ -46,6 +46,7 @@ jobs:
             docker-compose.yml
             nginx.conf
           target: /home/ubuntu/gym-pass/
+          strip_components: 0
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
@@ -54,7 +55,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd gym-pass
+            mkdir -p /home/ubuntu/gym-pass
+            cd /home/ubuntu/gym-pass
             export IMAGE_TAG=${{ github.sha }}
 
             sudo docker-compose pull
