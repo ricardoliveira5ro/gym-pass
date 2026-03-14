@@ -54,9 +54,8 @@ jobs:
           script: |
             mkdir -p /home/ubuntu/gym-pass
             cd /home/ubuntu/gym-pass
-            export IMAGE_TAG=${{ github.sha }}
 
-            sudo docker-compose pull
-            sudo IMAGE_TAG=${{ github.sha }} docker compose up -d
+            IMAGE_TAG=${{ github.sha }} sudo docker compose pull
+            IMAGE_TAG=${{ github.sha }} sudo docker compose up -d
 
             sudo docker image prune -f
