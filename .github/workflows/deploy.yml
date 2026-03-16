@@ -2,7 +2,9 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -36,6 +38,14 @@ jobs:
           docker push ricardo5ro/gym-pass-backend:${{ github.sha }}
           docker push ricardo5ro/gym-pass-backend:latest
 
+
+  deploy-staging:
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
       - name: Copy deployment files
         uses: appleboy/scp-action@v0.1.3
         with:
@@ -45,7 +55,7 @@ jobs:
           source: "docker-compose.yml,nginx.conf"
           target: "/home/ubuntu/gym-pass/"
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 (staging)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -55,7 +65,39 @@ jobs:
             mkdir -p /home/ubuntu/gym-pass
             cd /home/ubuntu/gym-pass
 
-            sudo IMAGE_TAG=${{ github.sha }} docker-compose pull
-            sudo IMAGE_TAG=${{ github.sha }} docker-compose up -d
+            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.staging pull
+            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.staging up -d
+
+            sudo docker image prune -f
+
+
+  deploy-production:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Copy deployment files
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml,nginx.conf"
+          target: "/home/ubuntu/gym-pass/"
+
+      - name: Deploy to EC2 (production)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/gym-pass
+            cd /home/ubuntu/gym-pass
+
+            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.production pull
+            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.production up -d
 
             sudo docker image prune -f
