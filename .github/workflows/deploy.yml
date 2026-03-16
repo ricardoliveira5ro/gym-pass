@@ -46,6 +46,9 @@ jobs:
     environment: staging
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Copy deployment files
         uses: appleboy/scp-action@v0.1.3
         with:
@@ -78,6 +81,9 @@ jobs:
     environment: production
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Copy deployment files
         uses: appleboy/scp-action@v0.1.3
         with:
@@ -85,7 +91,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml,nginx.conf"
-          target: "/home/ubuntu/gym-pass/"
+          target: "/home/ubuntu/gym-pass"
 
       - name: Deploy to EC2 (production)
         uses: appleboy/ssh-action@v1
