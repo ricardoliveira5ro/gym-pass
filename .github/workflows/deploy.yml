@@ -46,6 +46,9 @@ jobs:
     environment: staging
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Copy deployment files
         uses: appleboy/scp-action@v0.1.3
         with:
@@ -78,6 +81,9 @@ jobs:
     environment: production
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Copy deployment files
         uses: appleboy/scp-action@v0.1.3
         with:
