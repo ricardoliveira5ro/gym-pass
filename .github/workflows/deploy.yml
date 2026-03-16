@@ -85,7 +85,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml,nginx.conf"
-          target: "/home/ubuntu/gym-pass/"
+          target: "/home/ubuntu/gym-pass"
 
       - name: Deploy to EC2 (production)
         uses: appleboy/ssh-action@v1
