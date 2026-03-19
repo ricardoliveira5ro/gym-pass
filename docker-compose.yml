@@ -1,25 +1,5 @@
 services:
 
-  postgres:
-    image: postgres:16
-    restart: unless-stopped
-    container_name: gym_pass_database
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-    - gym_pass_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
   redis:
     image: redis:7
     restart: unless-stopped
@@ -73,6 +53,27 @@ services:
       - backend
     networks:
       - gym_pass_network
+
+  ### LEGACY
+  #postgres:
+  #  image: postgres:16
+  #  restart: unless-stopped
+  #  container_name: gym_pass_database
+  #  environment:
+  #    POSTGRES_DB: ${DB_NAME}
+  #    POSTGRES_USER: ${DB_USERNAME}
+  #    POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #  ports:
+  #    - "5432:5432"
+  #  volumes:
+  #    - postgres_data:/var/lib/postgresql/data
+  #  networks:
+  #  - gym_pass_network
+  #  healthcheck:
+  #    test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 3
 
 volumes:
   postgres_data:
