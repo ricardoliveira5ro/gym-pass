@@ -19,7 +19,7 @@ services:
   backend:
     #build: ./services
     image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
-    restart: unless-stopped
+    restart: "no"
     container_name: gym_pass_backend
     depends_on:
       #postgres:
@@ -50,7 +50,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - gym_pass_network
 
