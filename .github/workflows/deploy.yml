@@ -19,24 +19,36 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          cache: maven
 
       - name: Build jar
-        run: mvn clean package -DskipTests
+        run: mvn -T 1C clean package -DskipTests
         working-directory: services
 
-      - name: Build Docker image
-        run: |
-          docker build -t ricardo5ro/gym-pass-backend:${{ github.sha }} .
-          docker tag ricardo5ro/gym-pass-backend:${{ github.sha }} ricardo5ro/gym-pass-backend:latest
-        working-directory: services
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services
+          push: true
+          tags: |
+            ricardo5ro/gym-pass-backend:${{ github.sha }}
+            ricardo5ro/gym-pass-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Push image
-        run: |
-          docker push ricardo5ro/gym-pass-backend:${{ github.sha }}
-          docker push ricardo5ro/gym-pass-backend:latest
+      #- name: Push image
+      #  run: |
+      #    docker push ricardo5ro/gym-pass-backend:${{ github.sha }}
+      #    docker push ricardo5ro/gym-pass-backend:latest
 
 
   deploy-staging:
