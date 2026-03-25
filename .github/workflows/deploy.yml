@@ -19,16 +19,23 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          cache: maven
 
       - name: Build jar
-        run: mvn clean package -DskipTests
+        run: mvn -T 1C clean package -DskipTests
         working-directory: services
 
-      - name: Build Docker image
-        run: |
-          docker build -t ricardo5ro/gym-pass-backend:${{ github.sha }} .
-          docker tag ricardo5ro/gym-pass-backend:${{ github.sha }} ricardo5ro/gym-pass-backend:latest
-        working-directory: services
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services
+          push: false
+          tags: ricardo5ro/gym-pass-backend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Login DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
