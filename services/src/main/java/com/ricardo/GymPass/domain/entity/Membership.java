@@ -18,6 +18,9 @@ public class Membership {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "EXTERNAL_ID")
+    private String externalId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
@@ -57,6 +60,14 @@ public class Membership {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public User getUser() {
