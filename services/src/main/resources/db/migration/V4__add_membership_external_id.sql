@@ -1,0 +1,3 @@
+-- Add external_id column to T_MEMBERSHIPS for sync upsert
+ALTER TABLE T_MEMBERSHIPS ADD COLUMN EXTERNAL_ID VARCHAR(255);
+CREATE INDEX idx_memberships_external_id ON T_MEMBERSHIPS(EXTERNAL_ID);
