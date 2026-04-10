@@ -23,17 +23,17 @@ public class User {
     @Column(name = "EXTERNAL_ID")
     private String externalId;
 
-    @Column(name = "EMAIL", nullable = false, unique = true)
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
-    @Column(name = "PASSWORD_HASH", nullable = false)
+    @Column(name = "PASSWORD_HASH")
     private String passwordHash;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "NAME")
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE", nullable = false, length = 50)
+    @Column(name = "ROLE", length = 50)
     private UserRole role;
 
     @Column(name = "IS_IMPORTED", nullable = false)
