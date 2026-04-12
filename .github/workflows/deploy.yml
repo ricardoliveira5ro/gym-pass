@@ -81,7 +81,7 @@ jobs:
             cd /home/ubuntu/gym-pass
 
             sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.staging pull
-            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.staging up -d
+            sudo IMAGE_TAG=${{ github.sha }} docker compose --env-file .env.staging up -d --force-recreate
 
             sudo docker image prune -f
 
