@@ -19,7 +19,7 @@ services:
   backend:
     #build: ./services
     image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
-    restart: "no"
+    restart: unless-stopped
     container_name: gym_pass_backend
     depends_on:
       #postgres:
@@ -41,7 +41,7 @@ services:
       timeout: 5s
       retries: 3
 
-  nginx:
+nginx:
     image: nginx:latest
     restart: unless-stopped
     container_name: gym_pass_nginx
@@ -54,6 +54,11 @@ services:
         condition: service_healthy
     networks:
       - gym_pass_network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   ### LEGACY
   #postgres:
