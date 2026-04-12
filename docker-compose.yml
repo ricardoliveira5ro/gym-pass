@@ -44,7 +44,7 @@ services:
       timeout: 5s
       retries: 3
 
-nginx:
+  nginx:
     image: nginx:latest
     restart: unless-stopped
     container_name: gym_pass_nginx
