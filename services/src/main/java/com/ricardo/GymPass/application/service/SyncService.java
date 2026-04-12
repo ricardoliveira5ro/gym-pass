@@ -72,23 +72,21 @@ public class SyncService {
             Optional<User> existingUser = userRepository.findByExternalId(member.id());
 
             if (existingUser.isPresent()) {
-                // Update existing user
                 User user = existingUser.get();
-                user.setName(member.name());
-                user.setEmail(member.email());
                 userRepository.save(user);
+
                 usersUpdated++;
                 logger.debug("Updated user: {}", user.getExternalId());
             } else {
-                // Create new user
                 User newUser = new User();
+
                 newUser.setExternalId(member.id());
-                newUser.setName(member.name());
-                newUser.setEmail(member.email());
-                newUser.setPasswordHash(""); // Imported users have no password
+                newUser.setPasswordHash("");
                 newUser.setRole(UserRole.MEMBER);
                 newUser.setImported(true);
+
                 userRepository.save(newUser);
+
                 usersCreated++;
                 logger.debug("Created user: {}", newUser.getExternalId());
             }
@@ -108,17 +106,17 @@ public class SyncService {
             Optional<Membership> existingMembership = membershipRepository.findByExternalId(membershipDto.id());
 
             if (existingMembership.isPresent()) {
-                // Update existing membership
                 Membership membership = existingMembership.get();
                 membership.setStatus(parseStatus(membershipDto.status()));
                 membership.setTier(parseTier(membershipDto.tier()));
                 membership.setStartDate(membershipDto.startDate());
                 membership.setEndDate(membershipDto.endDate());
+
                 membershipRepository.save(membership);
+
                 membershipsUpdated++;
                 logger.debug("Updated membership: {}", membership.getExternalId());
             } else {
-                // Create new membership
                 Membership newMembership = new Membership();
                 newMembership.setExternalId(membershipDto.id());
                 newMembership.setUser(user);
@@ -127,7 +125,9 @@ public class SyncService {
                 newMembership.setTier(parseTier(membershipDto.tier()));
                 newMembership.setStartDate(membershipDto.startDate());
                 newMembership.setEndDate(membershipDto.endDate());
+
                 membershipRepository.save(newMembership);
+
                 membershipsCreated++;
                 logger.debug("Created membership: {}", newMembership.getExternalId());
             }
