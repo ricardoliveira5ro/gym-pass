@@ -19,7 +19,7 @@ services:
   backend:
     #build: ./services
     image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
-    restart: unless-stopped
+    restart: always
     container_name: gym_pass_backend
     depends_on:
       #postgres:
@@ -33,6 +33,9 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      EXTERNAL_API_BASE_URL: ${EXTERNAL_API_BASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
     networks:
     - gym_pass_network
     healthcheck:
