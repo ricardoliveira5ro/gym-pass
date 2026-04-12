@@ -19,7 +19,7 @@ services:
   backend:
     #build: ./services
     image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
-    restart: always
+    restart: unless-stopped
     container_name: gym_pass_backend
     depends_on:
       #postgres:
