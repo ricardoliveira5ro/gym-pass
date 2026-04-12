@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "T_MEMBERSHIPS")
@@ -19,8 +18,9 @@ import java.util.UUID;
 public class Membership {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "membership_seq")
+    @SequenceGenerator(name = "membership_seq", sequenceName = "SEQ_MEMBERSHIP", allocationSize = 1)
+    private Long id;
 
     @Column(name = "EXTERNAL_ID")
     private String externalId;

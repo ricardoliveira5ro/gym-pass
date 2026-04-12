@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "T_GYM")
@@ -17,8 +16,9 @@ import java.util.UUID;
 public class Gym {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gym_seq")
+    @SequenceGenerator(name = "gym_seq", sequenceName = "SEQ_GYM", allocationSize = 1)
+    private Long id;
 
     @Column(name = "NAME", nullable = false)
     private String name;
