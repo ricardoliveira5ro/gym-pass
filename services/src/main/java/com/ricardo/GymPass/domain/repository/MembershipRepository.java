@@ -6,10 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface MembershipRepository extends JpaRepository<Membership, UUID> {
+public interface MembershipRepository extends JpaRepository<Membership, Long> {
     Optional<Membership> findByExternalId(String externalId);
     
     List<Membership> findByUserExternalId(String externalId);

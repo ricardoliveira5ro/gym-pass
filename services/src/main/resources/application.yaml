@@ -22,3 +22,7 @@ spring:
 external:
   api:
     base-url: ${EXTERNAL_API_BASE_URL}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
