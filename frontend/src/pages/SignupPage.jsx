@@ -98,7 +98,7 @@ function SignupPage() {
           <p className="text-lg font-body text-on-surface/70">Create your account to get started</p>
         </div>
         
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-x-8 gap-y-5">
           <Input
             label="Member ID"
             name="memberId"
