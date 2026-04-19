@@ -11,16 +11,16 @@ function Input({
   className = '',
   ...props
 }) {
-  const inputStyles = 'w-full px-4 py-3 bg-surface-container-high text-on-surface placeholder:text-on-surface/50 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-primary/30';
+  const inputStyles = 'w-full px-4 py-3 sm:py-3.5 bg-white/[0.03] border border-white/[0.08] text-white placeholder:text-white/30 rounded-lg sm:rounded-xl outline-none transition-all duration-200 ease-out focus:border-primary/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-primary/20';
   
-  const errorStyles = error ? 'border-2 border-error' : '';
+  const errorStyles = error ? 'border-red-500/40 bg-red-500/[0.03]' : '';
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label htmlFor={name} className="text-sm font-body font-medium text-on-surface">
+        <label htmlFor={name} className="text-sm font-medium text-white/60">
           {label}
-          {required && <span className="text-error ml-1">*</span>}
+          {required && <span className="text-red-400 ml-1">*</span>}
         </label>
       )}
       <input
@@ -36,7 +36,7 @@ function Input({
         {...props}
       />
       {error && (
-        <span className="text-sm font-body text-error">{error}</span>
+        <span className="text-sm text-red-400">{error}</span>
       )}
     </div>
   );

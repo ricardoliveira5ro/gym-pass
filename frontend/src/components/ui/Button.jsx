@@ -8,12 +8,12 @@ function Button({
   onClick,
   ...props 
 }) {
-  const baseStyles = 'inline-flex items-center justify-center px-6 py-3 rounded-xl font-heading font-medium text-base transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center px-6 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-heading font-semibold text-base transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]';
   
   const variants = {
-    primary: 'bg-gradient-to-br from-primary to-primary-container text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]',
-    secondary: 'bg-surface-container-high text-on-surface hover:bg-surface-container active:scale-[0.98]',
-    tertiary: 'bg-transparent text-on-surface hover:bg-surface-container-low active:scale-[0.98]',
+    primary: 'bg-gradient-to-r from-primary to-[#8ab51a] text-white shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]',
+    secondary: 'bg-white/[0.05] border border-white/[0.12] text-white hover:bg-white/[0.1] hover:border-white/[0.2] active:scale-[0.98]',
+    tertiary: 'bg-transparent text-white/70 hover:text-white hover:bg-white/[0.05] active:scale-[0.98]',
   };
 
   const variantStyles = variants[variant] || variants.primary;
