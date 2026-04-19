@@ -40,12 +40,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (memberId, name, email, password) => {
     try {
       const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ memberId, name, email, password }),
       });
 
       if (!response.ok) {

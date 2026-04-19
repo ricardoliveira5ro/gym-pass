@@ -7,14 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#536600',
-        'primary-container': '#caf300',
-        surface: '#f9f9f9',
-        'surface-container': '#ebeeef',
-        'surface-container-low': '#ffffff',
-        'surface-container-high': '#e4e9ea',
-        'on-surface': '#2d3435',
-        error: '#9f403d',
+        primary: '#a3c621',
+        'primary-container': '#3d4a00',
+        surface: '#121212',
+        'surface-container': '#1e1e1e',
+        'surface-container-low': '#252525',
+        'surface-container-high': '#2d2d2d',
+        'on-surface': '#e0e0e0',
+        'on-surface/70': 'rgba(224, 224, 224, 0.7)',
+        error: '#ea6b69',
       },
       fontFamily: {
         heading: ['Manrope', 'sans-serif'],

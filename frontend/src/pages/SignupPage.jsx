@@ -8,6 +8,7 @@ function SignupPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [formData, setFormData] = useState({
+    memberId: '',
     name: '',
     email: '',
     password: '',
@@ -20,6 +21,10 @@ function SignupPage() {
 
   const validateForm = () => {
     const newErrors = {};
+    
+    if (!formData.memberId.trim()) {
+      newErrors.memberId = 'Member ID is required';
+    }
     
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
@@ -68,7 +73,7 @@ function SignupPage() {
     setIsLoading(true);
     
     try {
-      const result = await register(formData.name, formData.email, formData.password);
+      const result = await register(formData.memberId, formData.name, formData.email, formData.password);
       
       if (result.success) {
         setSuccessMessage('Registration successful! Redirecting to login...');
@@ -94,6 +99,16 @@ function SignupPage() {
         </div>
         
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <Input
+            label="Member ID"
+            name="memberId"
+            value={formData.memberId}
+            onChange={handleChange}
+            placeholder="ID"
+            error={errors.memberId}
+            required
+          />
+          
           <Input
             label="Full Name"
             name="name"
