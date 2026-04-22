@@ -69,9 +69,9 @@ function SignupPage() {
       const result = await register(formData.memberId, formData.name, formData.email, formData.password);
       
       if (result.success) {
-        setSuccessMessage('Registration successful! Redirecting to login...');
+        setSuccessMessage('Account created successfully!');
         setTimeout(() => {
-          navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
+          navigate('/login', { state: { message: 'Welcome! Please sign in to continue.' } });
         }, 1500);
       } else {
         setApiError(result.error || 'Registration failed. Please try again.');
@@ -85,117 +85,164 @@ function SignupPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d] via-[#111111] to-[#0a0a0a]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#080808] via-[#0c0c0c] to-[#080808]" />
       
-      <div className="absolute inset-0 hidden sm:block">
-        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[180px]" />
-        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
+      <div className="absolute inset-0">
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-primary/6 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/4 rounded-full blur-[120px]" />
+        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-primary/[0.02] rounded-full blur-[100px]" />
       </div>
 
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4yIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnYyaDR2MmgtdnptLTQtOGgydjJoLTJ2LTJ6bTAtOGgydjJoLTJ2LTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20 sm:opacity-30" />
+      <div className="absolute inset-0 opacity-[0.015]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+      }} />
 
-      <div className="relative min-h-screen flex flex-col items-center justify-start sm:justify-center pt-8 sm:pt-0 px-4">
-        <div className="w-full max-w-sm sm:max-w-md">
-          <div className="text-center mb-6 sm:mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary to-[#8ab51a] mb-4 sm:mb-6 shadow-xl sm:shadow-2xl shadow-primary/30 ring-1 ring-primary/20">
-              <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-5 py-6">
+        <div className="w-full max-w-[380px]">
+          <div className="text-center mb-10">
+            <div 
+              className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 animate-scale-in shadow-glow"
+              style={{ background: 'linear-gradient(135deg, #a3c621 0%, #8ab418 100%)' }}
+            >
+              <svg className="w-10 h-10 text-[#080808]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mb-2 sm:mb-3 tracking-tight">
+            
+            <h1 
+              className="text-4xl font-heading font-bold text-on-surface mb-3 animate-fade-up opacity-0"
+              style={{ animationFillMode: 'forwards' }}
+            >
               Join GymPass
             </h1>
-            <p className="text-base sm:text-lg text-white/50">
-              Create your account
+            
+            <p 
+              className="text-on-surface-muted text-base animate-fade-up opacity-0"
+              style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+            >
+              Create your member account
             </p>
           </div>
           
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-primary/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-50 hidden sm:block" />
-            <div className="relative bg-[#0f0f0f]/90 sm:bg-[#0f0f0f]/80 backdrop-blur-xl sm:backdrop-blur-2xl rounded-2xl sm:rounded-3xl border border-white/8 p-5 sm:p-8 shadow-xl sm:shadow-2xl">
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                <Input
-                  label="Member ID"
-                  name="memberId"
-                  value={formData.memberId}
-                  onChange={handleChange}
-                  placeholder="Enter your member ID"
-                  error={errors.memberId}
-                  required
-                />
+          <div 
+            className="relative animate-fade-up opacity-0"
+            style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-2xl blur-lg opacity-50" />
+            
+            <div className="relative bg-surface-card/80 backdrop-blur-2xl rounded-2xl border border-white/[0.06] p-7 shadow-card">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="animate-fade-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
+                  <Input
+                    label="Member ID"
+                    name="memberId"
+                    value={formData.memberId}
+                    onChange={handleChange}
+                    placeholder="Your gym member ID"
+                    error={errors.memberId}
+                    required
+                  />
+                </div>
                 
-                <Input
-                  label="Full Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  error={errors.name}
-                  required
-                  autoComplete="name"
-                />
+                <div className="animate-fade-up opacity-0" style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}>
+                  <Input
+                    label="Full Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    error={errors.name}
+                    required
+                    autoComplete="name"
+                  />
+                </div>
                 
-                <Input
-                  label="Email"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                  error={errors.email}
-                  required
-                  autoComplete="email"
-                />
+                <div className="animate-fade-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
+                  <Input
+                    label="Email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    error={errors.email}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
                 
-                <Input
-                  label="Password"
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Create a password"
-                  error={errors.password}
-                  required
-                  autoComplete="new-password"
-                />
+                <div className="animate-fade-up opacity-0" style={{ animationDelay: '450ms', animationFillMode: 'forwards' }}>
+                  <Input
+                    label="Password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Min. 6 characters"
+                    error={errors.password}
+                    required
+                    autoComplete="new-password"
+                  />
+                </div>
                 
                 {apiError && (
-                  <div className="p-3 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-                    <p className="text-sm text-red-400">{apiError}</p>
+                  <div className="p-4 bg-error/10 border border-error/20 rounded-xl animate-fade-up">
+                    <p className="text-sm text-error font-medium flex items-center gap-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {apiError}
+                    </p>
                   </div>
                 )}
                 
                 {successMessage && (
-                  <div className="p-3 sm:p-4 bg-primary/10 border border-primary/20 rounded-xl">
-                    <p className="text-sm text-primary font-medium">{successMessage}</p>
+                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl animate-fade-up">
+                    <p className="text-sm text-primary font-medium flex items-center gap-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {successMessage}
+                    </p>
                   </div>
                 )}
                 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  loading={isLoading}
-                  disabled={isLoading}
-                  className="w-full mt-1 sm:mt-2"
-                >
-                  Create Account
-                </Button>
+                <div className="animate-fade-up opacity-0 pt-2" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isLoading}
+                    disabled={isLoading}
+                    className="w-full"
+                  >
+                    Create Account
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
           
-          <div className="mt-6 sm:mt-8 text-center">
-            <p className="text-white/50 text-sm sm:text-base">
+          <div 
+            className="mt-8 text-center animate-fade-up opacity-0"
+            style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
+          >
+            <p className="text-on-surface-muted text-sm">
               Already have an account?{' '}
-              <Link to="/login" className="text-primary font-semibold hover:text-primary/80 transition-colors duration-200">
+              <Link 
+                to="/login" 
+                className="text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
+              >
                 Sign in
               </Link>
             </p>
           </div>
 
-          <div className="mt-4 sm:mt-6 flex items-center justify-center gap-2 text-white/30">
-            <div className="w-2 h-2 rounded-full bg-primary/50 animate-pulse" />
-            <span className="text-xs">GymPass</span>
+          <div 
+            className="mt-8 flex items-center justify-center gap-2 text-on-surface-muted/40 animate-fade-up opacity-0"
+            style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-medium tracking-widest uppercase">GymPass</span>
           </div>
         </div>
       </div>
