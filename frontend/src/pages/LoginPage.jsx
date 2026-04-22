@@ -9,7 +9,7 @@ function LoginPage() {
   const location = useLocation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
+    externalId: '',
     password: '',
   });
   const [errors, setErrors] = useState({});
@@ -21,10 +21,8 @@ function LoginPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    if (!formData.externalId.trim()) {
+      newErrors.externalId = 'Member ID is required';
     }
 
     if (!formData.password) {
@@ -55,12 +53,12 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
-      const result = await login(formData.email, formData.password);
+      const result = await login(formData.externalId, formData.password);
 
       if (result.success) {
         navigate('/dashboard');
       } else {
-        setApiError(result.error || 'Invalid email or password');
+        setApiError(result.error || 'Invalid member ID or password');
       }
     } catch (error) {
       setApiError('An unexpected error occurred. Please try again.');
@@ -126,15 +124,15 @@ function LoginPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
                   <Input
-                    label="Email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    label="Member ID"
+                    type="text"
+                    name="externalId"
+                    value={formData.externalId}
                     onChange={handleChange}
-                    placeholder="you@example.com"
-                    error={errors.email}
+                    placeholder="Enter your member ID"
+                    error={errors.externalId}
                     required
-                    autoComplete="email"
+                    autoComplete="username"
                   />
                 </div>
 
