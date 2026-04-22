@@ -7,7 +7,34 @@ on:
       - develop
 
 jobs:
-  build:
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ricardo5ro/gym-pass-frontend:${{ github.sha }}
+            ricardo5ro/gym-pass-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +61,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image (with cache)
+      - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
           context: ./services
@@ -45,14 +72,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      #- name: Push image
-      #  run: |
-      #    docker push ricardo5ro/gym-pass-backend:${{ github.sha }}
-      #    docker push ricardo5ro/gym-pass-backend:latest
-
-
   deploy-staging:
-    needs: build
+    needs: [build-frontend, build-backend]
     if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     environment: staging
@@ -85,9 +106,8 @@ jobs:
 
             sudo docker system prune -a --volumes -f
 
-
   deploy-production:
-    needs: build
+    needs: [build-frontend, build-backend]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production

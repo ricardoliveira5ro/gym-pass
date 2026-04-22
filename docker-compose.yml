@@ -16,6 +16,21 @@ services:
       timeout: 5s
       retries: 3
 
+  frontend:
+    #build: ./frontend
+    image: ricardo5ro/gym-pass-frontend:${IMAGE_TAG}
+    restart: unless-stopped
+    container_name: gym_pass_frontend
+    expose:
+      - "80"
+    networks:
+    - gym_pass_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   backend:
     #build: ./services
     image: ricardo5ro/gym-pass-backend:${IMAGE_TAG}
@@ -44,7 +59,7 @@ services:
       timeout: 5s
       retries: 3
 
-  nginx:
+nginx:
     image: nginx:latest
     restart: unless-stopped
     container_name: gym_pass_nginx
@@ -55,8 +70,10 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
-      - gym_pass_network
+    - gym_pass_network
     healthcheck:
       test: ["CMD", "nginx", "-t"]
       interval: 30s
