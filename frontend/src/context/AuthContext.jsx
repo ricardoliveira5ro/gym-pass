@@ -18,12 +18,12 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
-  const login = async (email, password) => {
+  const login = async (externalId, password) => {
     try {
       const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ externalId, password }),
       });
 
       if (!response.ok) {
@@ -40,12 +40,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (memberId, name, email, password) => {
+  const register = async (externalId, name, email, password) => {
     try {
       const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId, name, email, password }),
+        body: JSON.stringify({ externalId, name, email, password }),
       });
 
       if (!response.ok) {

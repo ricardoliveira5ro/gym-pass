@@ -8,7 +8,7 @@ function SignupPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [formData, setFormData] = useState({
-    memberId: '',
+    externalId: '',
     name: '',
     email: '',
     password: '',
@@ -21,8 +21,8 @@ function SignupPage() {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.memberId.trim()) {
-      newErrors.memberId = 'Member ID is required';
+    if (!formData.externalId.trim()) {
+      newErrors.externalId = 'Member ID is required';
     }
     
     if (!formData.name.trim()) {
@@ -66,7 +66,7 @@ function SignupPage() {
     setIsLoading(true);
     
     try {
-      const result = await register(formData.memberId, formData.name, formData.email, formData.password);
+      const result = await register(formData.externalId, formData.name, formData.email, formData.password);
       
       if (result.success) {
         setSuccessMessage('Account created successfully!');
@@ -135,11 +135,11 @@ function SignupPage() {
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
                   <Input
                     label="Member ID"
-                    name="memberId"
-                    value={formData.memberId}
+                    name="externalId"
+                    value={formData.externalId}
                     onChange={handleChange}
                     placeholder="Your gym member ID"
-                    error={errors.memberId}
+                    error={errors.externalId}
                     required
                   />
                 </div>
