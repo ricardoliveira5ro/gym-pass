@@ -1,46 +1,34 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
-function SignupPage() {
+function LoginPage() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const location = useLocation();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     externalId: '',
-    name: '',
-    email: '',
     password: '',
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+
+  const message = location.state?.message;
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.externalId.trim()) {
       newErrors.externalId = 'Member ID is required';
     }
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -57,24 +45,20 @@ function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('');
-    setSuccessMessage('');
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      const result = await register(formData.externalId, formData.name, formData.email, formData.password);
-      
+      const result = await login(formData.externalId, formData.password);
+
       if (result.success) {
-        setSuccessMessage('Account created successfully!');
-        setTimeout(() => {
-          navigate('/login', { state: { message: 'Welcome! Please sign in to continue.' } });
-        }, 1500);
+        navigate('/dashboard');
       } else {
-        setApiError(result.error || 'Registration failed. Please try again.');
+        setApiError(result.error || 'Invalid member ID or password');
       }
     } catch (error) {
       setApiError('An unexpected error occurred. Please try again.');
@@ -88,9 +72,9 @@ function SignupPage() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#080808] via-[#0c0c0c] to-[#080808]" />
       
       <div className="absolute inset-0">
-        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-primary/6 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/4 rounded-full blur-[120px]" />
-        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-primary/[0.02] rounded-full blur-[100px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/6 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary/4 rounded-full blur-[120px]" />
+        <div className="absolute top-[40%] right-[20%] w-[300px] h-[300px] bg-primary/[0.02] rounded-full blur-[100px]" />
       </div>
 
       <div className="absolute inset-0 opacity-[0.015]" style={{
@@ -105,7 +89,7 @@ function SignupPage() {
               style={{ background: 'linear-gradient(135deg, #a3c621 0%, #8ab418 100%)' }}
             >
               <svg className="w-10 h-10 text-[#080808]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
             
@@ -113,17 +97,17 @@ function SignupPage() {
               className="text-4xl font-heading font-bold text-on-surface mb-3 animate-fade-up opacity-0"
               style={{ animationFillMode: 'forwards' }}
             >
-              Join GymPass
+              Welcome Back
             </h1>
             
             <p 
               className="text-on-surface-muted text-base animate-fade-up opacity-0"
               style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
             >
-              Create your member account
+              Access your gym credentials
             </p>
           </div>
-          
+
           <div 
             className="relative animate-fade-up opacity-0"
             style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
@@ -131,60 +115,41 @@ function SignupPage() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-2xl blur-lg opacity-50" />
             
             <div className="relative bg-surface-card/80 backdrop-blur-2xl rounded-2xl border border-white/[0.06] p-7 shadow-card">
+              {message && (
+                <div className="mb-5 p-4 bg-primary/10 border border-primary/20 rounded-xl">
+                  <p className="text-sm text-primary font-medium">{message}</p>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
                   <Input
                     label="Member ID"
+                    type="text"
                     name="externalId"
                     value={formData.externalId}
                     onChange={handleChange}
-                    placeholder="Your gym member ID"
+                    placeholder="Enter your member ID"
                     error={errors.externalId}
                     required
+                    autoComplete="username"
                   />
                 </div>
-                
-                <div className="animate-fade-up opacity-0" style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}>
-                  <Input
-                    label="Full Name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="John Doe"
-                    error={errors.name}
-                    required
-                    autoComplete="name"
-                  />
-                </div>
-                
+
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-                  <Input
-                    label="Email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="you@example.com"
-                    error={errors.email}
-                    required
-                    autoComplete="email"
-                  />
-                </div>
-                
-                <div className="animate-fade-up opacity-0" style={{ animationDelay: '450ms', animationFillMode: 'forwards' }}>
                   <Input
                     label="Password"
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Min. 6 characters"
+                    placeholder="Enter your password"
                     error={errors.password}
                     required
-                    autoComplete="new-password"
+                    autoComplete="current-password"
                   />
                 </div>
-                
+
                 {apiError && (
                   <div className="p-4 bg-error/10 border border-error/20 rounded-xl animate-fade-up">
                     <p className="text-sm text-error font-medium flex items-center gap-2">
@@ -195,18 +160,7 @@ function SignupPage() {
                     </p>
                   </div>
                 )}
-                
-                {successMessage && (
-                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl animate-fade-up">
-                    <p className="text-sm text-primary font-medium flex items-center gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {successMessage}
-                    </p>
-                  </div>
-                )}
-                
+
                 <div className="animate-fade-up opacity-0 pt-2" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
                   <Button
                     type="submit"
@@ -215,24 +169,24 @@ function SignupPage() {
                     disabled={isLoading}
                     className="w-full"
                   >
-                    Create Account
+                    Sign In
                   </Button>
                 </div>
               </form>
             </div>
           </div>
-          
+
           <div 
             className="mt-8 text-center animate-fade-up opacity-0"
             style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
           >
             <p className="text-on-surface-muted text-sm">
-              Already have an account?{' '}
+              Don't have an account?{' '}
               <Link 
-                to="/login" 
+                to="/signup" 
                 className="text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
               >
-                Sign in
+                Create one
               </Link>
             </p>
           </div>
@@ -250,4 +204,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default LoginPage;
