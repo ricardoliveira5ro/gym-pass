@@ -24,7 +24,7 @@ services:
     expose:
       - "80"
     networks:
-    - gym_pass_network
+      - gym_pass_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
@@ -52,14 +52,14 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
     networks:
-    - gym_pass_network
+      - gym_pass_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
       timeout: 5s
       retries: 3
 
-nginx:
+  nginx:
     image: nginx:latest
     restart: unless-stopped
     container_name: gym_pass_nginx
@@ -73,7 +73,7 @@ nginx:
       frontend:
         condition: service_healthy
     networks:
-    - gym_pass_network
+      - gym_pass_network
     healthcheck:
       test: ["CMD", "nginx", "-t"]
       interval: 30s
