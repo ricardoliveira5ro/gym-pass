@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
@@ -8,6 +9,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { t, language, toggleLanguage } = useLanguage();
   const [formData, setFormData] = useState({
     externalId: '',
     password: '',
@@ -82,6 +84,18 @@ function LoginPage() {
       }} />
 
       <div className="relative min-h-screen flex flex-col items-center justify-center px-5 py-6">
+        <div className="absolute top-5 right-5 z-20">
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-card/60 backdrop-blur-sm border border-white/10 text-on-surface-muted hover:text-on-surface hover:border-white/20 transition-all duration-200"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+            <span className="text-sm font-medium uppercase">{language}</span>
+          </button>
+        </div>
+        
         <div className="w-full max-w-[380px]">
           <div className="text-center mb-10">
             <div 
@@ -97,14 +111,14 @@ function LoginPage() {
               className="text-4xl font-heading font-bold text-on-surface mb-3 animate-fade-up opacity-0"
               style={{ animationFillMode: 'forwards' }}
             >
-              Welcome Back
+              {t('welcomeBack')}
             </h1>
             
             <p 
               className="text-on-surface-muted text-base animate-fade-up opacity-0"
               style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
             >
-              Access your gym credentials
+              {t('accessCredentials')}
             </p>
           </div>
 
@@ -124,12 +138,12 @@ function LoginPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
                   <Input
-                    label="Member ID"
+                    label={t('memberId')}
                     type="text"
                     name="externalId"
                     value={formData.externalId}
                     onChange={handleChange}
-                    placeholder="Enter your member ID"
+                    placeholder={t('enterMemberId')}
                     error={errors.externalId}
                     required
                     autoComplete="username"
@@ -138,12 +152,12 @@ function LoginPage() {
 
                 <div className="animate-fade-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
                   <Input
-                    label="Password"
+                    label={t('password')}
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter your password"
+                    placeholder={t('enterPassword')}
                     error={errors.password}
                     required
                     autoComplete="current-password"
@@ -169,7 +183,7 @@ function LoginPage() {
                     disabled={isLoading}
                     className="w-full"
                   >
-                    Sign In
+                    {t('signInBtn')}
                   </Button>
                 </div>
               </form>
@@ -181,12 +195,12 @@ function LoginPage() {
             style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
           >
             <p className="text-on-surface-muted text-sm">
-              Don't have an account?{' '}
+              {t('dontHaveAccount')}{' '}
               <Link 
                 to="/signup" 
                 className="text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
               >
-                Create one
+                {t('createOne')}
               </Link>
             </p>
           </div>
