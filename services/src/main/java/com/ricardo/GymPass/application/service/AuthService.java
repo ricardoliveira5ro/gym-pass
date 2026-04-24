@@ -3,6 +3,7 @@ package com.ricardo.GymPass.application.service;
 import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
 import com.ricardo.GymPass.domain.entity.User;
+import com.ricardo.GymPass.domain.exception.AuthException;
 import com.ricardo.GymPass.domain.repository.UserRepository;
 import com.ricardo.GymPass.infrastructure.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,15 +24,15 @@ public class AuthService {
 
     public AuthResult register(RegisterRequest request) {
         var existingUserOpt = userRepository.findByExternalId(request.getExternalId());
-        
+
         User user;
-        
+
         if (existingUserOpt.isPresent()) {
             user = existingUserOpt.get();
 
             if (!user.isImported() && userRepository.findByEmail(request.getEmail()).isPresent())
-                throw new RuntimeException("Email already exists");
-            
+                throw new AuthException("EMAIL_EXISTS", "Email already exists");
+
             user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
             user.setName(request.getName());
             user.setEmail(request.getEmail());
@@ -39,7 +40,7 @@ public class AuthService {
             user = userRepository.save(user);
 
         } else {
-            throw new RuntimeException("Invalid credentials");
+            throw new AuthException("INVALID_CREDENTIALS", "Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(user.getId().toString(), user.getEmail(), user.getRole().name());
@@ -49,13 +50,13 @@ public class AuthService {
 
     public AuthResult login(LoginRequest request) {
         User user = userRepository.findByExternalId(request.getExternalId())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new AuthException("INVALID_CREDENTIALS", "Invalid credentials"));
 
         if (user.isImported())
-            throw new RuntimeException("Invalid credentials");
+            throw new AuthException("INVALID_CREDENTIALS", "Invalid credentials");
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash()))
-            throw new RuntimeException("Invalid credentials");
+            throw new AuthException("INVALID_CREDENTIALS", "Invalid credentials");
 
         String token = jwtUtil.generateToken(user.getId().toString(),  user.getEmail(), user.getRole().name());
 
