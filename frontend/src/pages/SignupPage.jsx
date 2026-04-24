@@ -8,7 +8,7 @@ import Input from '../components/ui/Input';
 function SignupPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language, toggleLanguage, mapError } = useLanguage();
   const [formData, setFormData] = useState({
     externalId: '',
     name: '',
@@ -24,23 +24,23 @@ function SignupPage() {
     const newErrors = {};
     
     if (!formData.externalId.trim()) {
-      newErrors.externalId = 'Member ID is required';
+      newErrors.externalId = t('errors.required');
     }
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('errors.required');
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('errors.required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('errors.invalidEmail');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('errors.required');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('errors.minPassword');
     }
     
     setErrors(newErrors);
@@ -71,15 +71,15 @@ function SignupPage() {
       const result = await register(formData.externalId, formData.name, formData.email, formData.password);
       
       if (result.success) {
-        setSuccessMessage('Account created successfully!');
+        setSuccessMessage(t('errors.accountCreated'));
         setTimeout(() => {
-          navigate('/login', { state: { message: 'Welcome! Please sign in to continue.' } });
+          navigate('/login', { state: { message: t('errors.pleaseSignIn') } });
         }, 1500);
       } else {
-        setApiError(result.error || 'Registration failed. Please try again.');
+        setApiError(mapError(result.code));
       }
     } catch (error) {
-      setApiError('An unexpected error occurred. Please try again.');
+      setApiError(mapError('INTERNAL_ERROR'));
     } finally {
       setIsLoading(false);
     }

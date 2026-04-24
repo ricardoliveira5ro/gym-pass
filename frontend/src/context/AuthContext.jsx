@@ -28,7 +28,11 @@ export function AuthProvider({ children }) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Login failed');
+        return { 
+          success: false, 
+          code: error.code || 'INTERNAL_ERROR', 
+          message: error.message || 'Login failed' 
+        };
       }
 
       const data = await response.json();
@@ -36,7 +40,7 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, code: 'INTERNAL_ERROR', message: error.message };
     }
   };
 
@@ -50,13 +54,17 @@ export function AuthProvider({ children }) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Registration failed');
+        return { 
+          success: false, 
+          code: error.code || 'INTERNAL_ERROR', 
+          message: error.message || 'Registration failed' 
+        };
       }
 
       const data = await response.json();
       return { success: true, userId: data.userId };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, code: 'INTERNAL_ERROR', message: error.message };
     }
   };
 
