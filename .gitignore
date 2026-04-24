@@ -6,3 +6,7 @@ notes.md
 
 # OPENCODE GSD
 /.planning
+
+# Local Services
+/.vscode
+start-services.bat
