@@ -10,19 +10,22 @@ import com.ricardo.GymPass.domain.entity.User;
 import com.ricardo.GymPass.domain.enums.MembershipStatus;
 import com.ricardo.GymPass.domain.enums.MembershipTier;
 import com.ricardo.GymPass.domain.enums.UserRole;
+import com.ricardo.GymPass.domain.exception.ExternalApiException;
+import com.ricardo.GymPass.domain.exception.ResourceNotFoundException;
 import com.ricardo.GymPass.domain.repository.GymRepository;
 import com.ricardo.GymPass.domain.repository.MembershipRepository;
 import com.ricardo.GymPass.domain.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Service
 public class SyncService {
@@ -48,8 +51,7 @@ public class SyncService {
     public SyncResult sync() {
         logger.info("Starting data sync from external API: {}", externalApiBaseUrl);
 
-        String url = externalApiBaseUrl + "/api/v1/sync/today";
-        SyncResponse response = restTemplate.getForObject(url, SyncResponse.class);
+        SyncResponse response = fetchFromExternalApi();
 
         if (response == null) {
             logger.warn("No data received from external API");
@@ -64,10 +66,8 @@ public class SyncService {
         int membershipsCreated = 0;
         int membershipsUpdated = 0;
 
-        // Get default gym
         Gym gym = getDefaultGym();
 
-        // Process members (users)
         for (ExternalMemberDto member : response.members()) {
             Optional<User> existingUser = userRepository.findByExternalId(member.id());
 
@@ -92,9 +92,7 @@ public class SyncService {
             }
         }
 
-        // Process memberships
         for (ExternalMembershipDto membershipDto : response.memberships()) {
-            // Link to user via externalId
             Optional<User> userOpt = userRepository.findByExternalId(membershipDto.memberId());
             if (userOpt.isEmpty()) {
                 logger.warn("Membership {} references unknown user {}, skipping",
@@ -140,6 +138,22 @@ public class SyncService {
         return new SyncResult(usersCreated, usersUpdated, membershipsCreated, membershipsUpdated, syncDate);
     }
 
+    private SyncResponse fetchFromExternalApi() {
+        String url = externalApiBaseUrl + "/api/v1/sync/today";
+        try {
+            return restTemplate.getForObject(url, SyncResponse.class);
+        } catch (HttpClientErrorException e) {
+            logger.error("Client error from external API: {}", e.getMessage());
+            throw new ExternalApiException("External API returned client error: " + e.getMessage(), e.getStatusCode().value());
+        } catch (HttpServerErrorException e) {
+            logger.error("Server error from external API: {}", e.getMessage());
+            throw new ExternalApiException("External API returned server error: " + e.getMessage(), e.getStatusCode().value());
+        } catch (Exception e) {
+            logger.error("Failed to connect to external API: {}", e.getMessage());
+            throw new ExternalApiException("Failed to connect to external API: " + e.getMessage());
+        }
+    }
+
     private Gym getDefaultGym() {
         return gymRepository.findFirstByActiveTrue()
                 .orElseGet(() -> {
@@ -147,7 +161,7 @@ public class SyncService {
                     return gymRepository.findAll().stream().findFirst()
                             .orElseGet(() -> {
                                 logger.error("No gym found in database. Please create a gym before syncing.");
-                                throw new IllegalStateException("No gym found in database");
+                                throw new ResourceNotFoundException("Gym", "default");
                             });
                 });
     }

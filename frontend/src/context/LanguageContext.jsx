@@ -21,6 +21,20 @@ const translations = {
     createAccountBtn: 'Create Account',
     alreadyHaveAccount: 'Already have an account?',
     signInLink: 'Sign in',
+    errors: {
+      required: 'This field is required',
+      invalidEmail: 'Please enter a valid email address',
+      minPassword: 'Password must be at least 6 characters',
+      invalidCredentials: 'Invalid member ID or password',
+      emailExists: 'Email already exists',
+      memberRegistered: 'Member already registered',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      registrationFailed: 'Registration failed. Please try again.',
+      accountCreated: 'Account created successfully!',
+      pleaseSignIn: 'Welcome! Please sign in to continue.',
+      resourceNotFound: 'The requested resource was not found.',
+      externalApiError: 'External service unavailable. Please try again later.',
+    },
   },
   pt: {
     welcomeBack: 'Bem-vindo de Volta',
@@ -42,10 +56,34 @@ const translations = {
     createAccountBtn: 'Criar Conta',
     alreadyHaveAccount: 'Já tens conta?',
     signInLink: 'Entra',
+    errors: {
+      required: 'Campo obrigatório',
+      invalidEmail: 'Email inválido',
+      minPassword: 'A palavra-passe deve ter pelo menos 6 caracteres',
+      invalidCredentials: 'Credenciais inválidas',
+      emailExists: 'Email já existe',
+      memberRegistered: 'Membro já está registado',
+      unexpectedError: 'Ocorreu um erro inesperado',
+      registrationFailed: 'O registo falhou',
+      accountCreated: 'Conta criada com sucesso!',
+      pleaseSignIn: 'Bem-vindo! Por favor, entra para continuar.',
+      resourceNotFound: 'O recurso solicitado não foi encontrado.',
+      externalApiError: 'Serviço externo indisponível',
+    },
   },
 };
 
 const LanguageContext = createContext();
+
+const errorCodeMap = {
+  INVALID_CREDENTIALS: 'errors.invalidCredentials',
+  EMAIL_EXISTS: 'errors.emailExists',
+  MEMBER_REGISTERED: 'errors.memberRegistered',
+  VALIDATION_ERROR: 'errors.required',
+  INTERNAL_ERROR: 'errors.unexpectedError',
+  RESOURCE_NOT_FOUND: 'errors.resourceNotFound',
+  EXTERNAL_API_ERROR: 'errors.externalApiError',
+};
 
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
@@ -57,15 +95,26 @@ export function LanguageProvider({ children }) {
   }, [language]);
 
   const t = (key) => {
-    return translations[language][key] || key;
+    const keys = key.split('.');
+    let value = translations[language];
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || key;
   };
 
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === 'en' ? 'pt' : 'en'));
   };
 
+  const mapError = (code) => {
+    const key = errorCodeMap[code];
+    if (key) return t(key);
+    return code;
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, t, toggleLanguage }}>
+    <LanguageContext.Provider value={{ language, t, toggleLanguage, mapError }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -9,7 +9,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language, toggleLanguage, mapError } = useLanguage();
   const [formData, setFormData] = useState({
     externalId: '',
     password: '',
@@ -24,11 +24,11 @@ function LoginPage() {
     const newErrors = {};
 
     if (!formData.externalId.trim()) {
-      newErrors.externalId = 'Member ID is required';
+      newErrors.externalId = t('errors.required');
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('errors.required');
     }
 
     setErrors(newErrors);
@@ -60,10 +60,10 @@ function LoginPage() {
       if (result.success) {
         navigate('/dashboard');
       } else {
-        setApiError(result.error || 'Invalid member ID or password');
+        setApiError(mapError(result.code));
       }
     } catch (error) {
-      setApiError('An unexpected error occurred. Please try again.');
+      setApiError(mapError('INTERNAL_ERROR'));
     } finally {
       setIsLoading(false);
     }
