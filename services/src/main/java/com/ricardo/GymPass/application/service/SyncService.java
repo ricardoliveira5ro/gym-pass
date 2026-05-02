@@ -72,9 +72,6 @@ public class SyncService {
             Optional<User> existingUser = userRepository.findByExternalId(member.id());
 
             if (existingUser.isPresent()) {
-                User user = existingUser.get();
-                userRepository.save(user);
-
                 usersUpdated++;
                 logger.debug("Updated user: {}", user.getExternalId());
             } else {
