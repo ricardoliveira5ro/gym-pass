@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    @Value("${app.env}")
-    private String appEnv;
+    @Value("${server.servlet.session.cookie.secure:true}")
+    private boolean cookieSecure;
+
+    @Value("${server.servlet.session.cookie.same-site:strict}")
+    private String cookieSameSite;
 
     private final AuthService authService;
     private final JwtUtil jwtUtil;
@@ -47,18 +50,18 @@ public class AuthController {
 
         Cookie headerPayloadCookie = new Cookie("jwt_header_payload", headerAndPayload);
         headerPayloadCookie.setHttpOnly(false);
-        headerPayloadCookie.setSecure(appEnv.equalsIgnoreCase("PROD"));
-        headerPayloadCookie.setAttribute("SameSite", appEnv.equalsIgnoreCase("PROD") ? "Strict" : "Lax");
+        headerPayloadCookie.setSecure(cookieSecure);
         headerPayloadCookie.setPath("/");
         headerPayloadCookie.setMaxAge(30 * 24 * 60 * 60);
+        headerPayloadCookie.setAttribute("SameSite", cookieSameSite);
         response.addCookie(headerPayloadCookie);
 
         Cookie signatureCookie = new Cookie("jwt_signature", signature);
         signatureCookie.setHttpOnly(true);
-        signatureCookie.setSecure(appEnv.equalsIgnoreCase("PROD"));
-        signatureCookie.setAttribute("SameSite", appEnv.equalsIgnoreCase("PROD") ? "Strict" : "Lax");
+        signatureCookie.setSecure(cookieSecure);
         signatureCookie.setPath("/");
         signatureCookie.setMaxAge(30 * 24 * 60 * 60);
+        signatureCookie.setAttribute("SameSite", cookieSameSite);
         response.addCookie(signatureCookie);
     }
 }
