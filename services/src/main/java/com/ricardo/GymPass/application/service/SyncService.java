@@ -73,7 +73,7 @@ public class SyncService {
 
             if (existingUser.isPresent()) {
                 usersUpdated++;
-                logger.debug("Updated user: {}", user.getExternalId());
+                logger.debug("Updated user: {}", existingUser.get().getExternalId());
             } else {
                 User newUser = new User();
 
