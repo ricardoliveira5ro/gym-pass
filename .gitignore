@@ -2,7 +2,7 @@
 .env.production
 .env.staging
 
-notes.md
+/docs
 
 # OPENCODE GSD
 /.planning

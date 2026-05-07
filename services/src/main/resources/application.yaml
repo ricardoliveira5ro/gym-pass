@@ -19,6 +19,13 @@ spring:
     baseline-on-migrate: true
     clean-disabled: true
 
+server:
+  servlet:
+    session:
+      cookie:
+        secure: ${COOKIE_SECURE:false}
+        same-site: ${COOKIE_SAME_SITE:lax}
+
 external:
   api:
     base-url: ${EXTERNAL_API_BASE_URL}
