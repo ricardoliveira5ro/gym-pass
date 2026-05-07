@@ -51,6 +51,7 @@ services:
       EXTERNAL_API_BASE_URL: ${EXTERNAL_API_BASE_URL}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
+      APP_ENV: ${APP_ENV}
     networks:
       - gym_pass_network
     healthcheck:

@@ -48,6 +48,10 @@ jobs:
           distribution: temurin
           cache: maven
 
+      - name: Run tests
+        run: mvn test
+        working-directory: services
+
       - name: Build jar
         run: mvn -T 1C clean package -DskipTests
         working-directory: services

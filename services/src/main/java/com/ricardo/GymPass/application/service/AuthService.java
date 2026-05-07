@@ -30,7 +30,10 @@ public class AuthService {
         if (existingUserOpt.isPresent()) {
             user = existingUserOpt.get();
 
-            if (!user.isImported() && userRepository.findByEmail(request.getEmail()).isPresent())
+            if (!user.isImported())
+                throw new AuthException("MEMBER_REGISTERED", "Member already registered");
+
+            if (userRepository.findByEmail(request.getEmail()).isPresent())
                 throw new AuthException("EMAIL_EXISTS", "Email already exists");
 
             user.setPasswordHash(passwordEncoder.encode(request.getPassword()));

@@ -18,7 +18,6 @@ import com.ricardo.GymPass.domain.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,6 +25,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class SyncService {
@@ -72,11 +72,8 @@ public class SyncService {
             Optional<User> existingUser = userRepository.findByExternalId(member.id());
 
             if (existingUser.isPresent()) {
-                User user = existingUser.get();
-                userRepository.save(user);
-
                 usersUpdated++;
-                logger.debug("Updated user: {}", user.getExternalId());
+                logger.debug("Updated user: {}", existingUser.get().getExternalId());
             } else {
                 User newUser = new User();
 

@@ -5,14 +5,19 @@ import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
 import com.ricardo.GymPass.application.service.AuthService;
 import com.ricardo.GymPass.infrastructure.security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+
+    @Value("${app.env}")
+    private String appEnv;
 
     private final AuthService authService;
     private final JwtUtil jwtUtil;
@@ -40,14 +45,18 @@ public class AuthController {
         String headerAndPayload = jwtUtil.getHeaderAndPayload(token);
         String signature = jwtUtil.getSignature(token);
 
-        jakarta.servlet.http.Cookie headerPayloadCookie = new jakarta.servlet.http.Cookie("jwt_header_payload", headerAndPayload);
+        Cookie headerPayloadCookie = new Cookie("jwt_header_payload", headerAndPayload);
         headerPayloadCookie.setHttpOnly(false);
+        headerPayloadCookie.setSecure(appEnv.equalsIgnoreCase("PROD"));
+        headerPayloadCookie.setAttribute("SameSite", appEnv.equalsIgnoreCase("PROD") ? "Strict" : "Lax");
         headerPayloadCookie.setPath("/");
         headerPayloadCookie.setMaxAge(30 * 24 * 60 * 60);
         response.addCookie(headerPayloadCookie);
 
-        jakarta.servlet.http.Cookie signatureCookie = new jakarta.servlet.http.Cookie("jwt_signature", signature);
+        Cookie signatureCookie = new Cookie("jwt_signature", signature);
         signatureCookie.setHttpOnly(true);
+        signatureCookie.setSecure(appEnv.equalsIgnoreCase("PROD"));
+        signatureCookie.setAttribute("SameSite", appEnv.equalsIgnoreCase("PROD") ? "Strict" : "Lax");
         signatureCookie.setPath("/");
         signatureCookie.setMaxAge(30 * 24 * 60 * 60);
         response.addCookie(signatureCookie);
