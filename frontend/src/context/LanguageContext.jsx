@@ -44,8 +44,11 @@ const translations = {
     welcome: 'Welcome',
     quickActions: 'Quick Actions',
     gymLocations: 'Gym Locations',
+    findGyms: 'Find gyms',
     support: 'Support',
     account: 'Account',
+    alerts: 'Alerts',
+    gyms: 'Gyms',
     errors: {
       required: 'This field is required',
       invalidEmail: 'Please enter a valid email address',
@@ -104,8 +107,11 @@ const translations = {
     welcome: 'Bem-vindo',
     quickActions: 'Ações Rápidas',
     gymLocations: 'Localizações',
+    findGyms: 'Encontra Ginásios',
     support: 'Suporte',
     account: 'Conta',
+    alerts: 'Alertas',
+    gyms: 'Ginásios',
     errors: {
       required: 'Campo obrigatório',
       invalidEmail: 'Email inválido',

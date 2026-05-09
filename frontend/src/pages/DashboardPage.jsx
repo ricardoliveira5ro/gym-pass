@@ -147,7 +147,7 @@ function DashboardPage() {
                   </svg>
                 </div>
                 <h3 className="text-base font-heading font-semibold text-on-surface">{t('gymLocations')}</h3>
-                <p className="text-xs text-on-surface-muted mt-1">Find gyms</p>
+                <p className="text-xs text-on-surface-muted mt-1">{t('findGyms')}</p>
               </button>
             </div>
           </div>
@@ -268,7 +268,7 @@ function DashboardPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="text-xs font-medium">Gyms</span>
+            <span className="text-xs font-medium">{t('gyms')}</span>
           </button>
 
           <div className="relative -mt-6">
@@ -289,7 +289,7 @@ function DashboardPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span className="text-xs font-medium">Alerts</span>
+            <span className="text-xs font-medium">{t('alerts')}</span>
           </button>
 
           <button 
