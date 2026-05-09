@@ -4,40 +4,54 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('gympass_token'));
-  const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('gympass_token', token);
-      setIsAuthenticated(true);
-    } else {
-      localStorage.removeItem('gympass_token');
-      setIsAuthenticated(false);
+    validateSession();
+  }, []);
+
+  const validateSession = async () => {
+    try {
+      const response = await fetch('/api/v1/auth/me', {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    } catch {
       setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
     }
-  }, [token]);
+  };
 
   const login = async (externalId, password) => {
     try {
       const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ externalId, password }),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        return { 
-          success: false, 
-          code: error.code || 'INTERNAL_ERROR', 
-          message: error.message || 'Login failed' 
+        return {
+          success: false,
+          code: error.code || 'INTERNAL_ERROR',
+          message: error.message || 'Login failed'
         };
       }
 
-      const data = await response.json();
-      setToken(data.token);
-      setUser(data.user);
+      await validateSession();
       return { success: true };
     } catch (error) {
       return { success: false, code: 'INTERNAL_ERROR', message: error.message };
@@ -49,34 +63,43 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ externalId, name, email, password }),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        return { 
-          success: false, 
-          code: error.code || 'INTERNAL_ERROR', 
-          message: error.message || 'Registration failed' 
+        return {
+          success: false,
+          code: error.code || 'INTERNAL_ERROR',
+          message: error.message || 'Registration failed'
         };
       }
 
-      const data = await response.json();
-      return { success: true, userId: data.userId };
+      await validateSession();
+      return { success: true };
     } catch (error) {
       return { success: false, code: 'INTERNAL_ERROR', message: error.message };
     }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
+  const logout = async () => {
+    try {
+      await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const value = {
     user,
-    token,
     isAuthenticated,
+    isLoading,
     login,
     register,
     logout,
