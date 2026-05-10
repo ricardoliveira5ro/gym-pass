@@ -5,7 +5,6 @@ import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
 import com.ricardo.GymPass.application.dto.UserResponse;
 import com.ricardo.GymPass.application.service.AuthService;
-import com.ricardo.GymPass.domain.entity.User;
 import com.ricardo.GymPass.domain.exception.AuthException;
 import com.ricardo.GymPass.infrastructure.security.JwtUtil;
 import jakarta.servlet.http.Cookie;
@@ -14,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,9 +60,9 @@ public class AuthController {
         }
 
         String userId = jwtUtil.extractUserId(token);
-        String email = jwtUtil.extractEmail(token);
+        AuthService.UserResult userResult = authService.getUser(userId);
 
-        return ResponseEntity.ok(new UserResponse(null, email));
+        return ResponseEntity.ok(new UserResponse(userResult.name(), userResult.externalId(), userResult.email()));
     }
 
     @PostMapping("/logout")

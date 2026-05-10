@@ -66,5 +66,20 @@ public class AuthService {
         return new AuthResult(token, user.getId().toString());
     }
 
+    public UserResult getUser(String userId) {
+        if (userId == null)
+            throw new AuthException("UNAUTHORIZED", "Not authenticated");
+
+        var existingUserOpt = userRepository.findByUserId(userId);
+
+        if (existingUserOpt.isEmpty())
+            throw new AuthException("UNAUTHORIZED", "Not authenticated");
+
+        User user = existingUserOpt.get();
+
+        return new UserResult(user.getName(), user.getExternalId(), user.getEmail());
+    }
+
     public record AuthResult(String token, String userId) {}
+    public record UserResult(String name, String externalId, String email) {}
 }
