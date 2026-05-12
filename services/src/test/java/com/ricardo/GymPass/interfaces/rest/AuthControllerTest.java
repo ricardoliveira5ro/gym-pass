@@ -1,7 +1,9 @@
 package com.ricardo.GymPass.interfaces.rest;
 
 import com.ricardo.GymPass.application.dto.AuthResult;
+import com.ricardo.GymPass.application.dto.UserResponse;
 import com.ricardo.GymPass.application.service.AuthService;
+import com.ricardo.GymPass.domain.exception.AuthException;
 import com.ricardo.GymPass.infrastructure.security.CookieManager;
 import com.ricardo.GymPass.infrastructure.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,5 +74,51 @@ class AuthControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authService).login(any());
         verify(cookieManager).setJwtCookies(anyString(), eq(httpServletResponse));
+    }
+
+    @Test
+    void logout_clearsCookiesAndReturns200() {
+        ResponseEntity<?> response = authController.logout(httpServletResponse);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(cookieManager).clearJwtCookies(httpServletResponse);
+    }
+
+    @Test
+    void me_returnsUserWhenAuthenticated() {
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+
+        when(cookieManager.extractTokenFromCookies(httpServletRequest)).thenReturn("token");
+        when(jwtUtil.validateToken("token")).thenReturn(true);
+        when(jwtUtil.extractId("token")).thenReturn("user-id");
+        when(authService.getUser("user-id")).thenReturn(new UserResponse("John Doe", "ext-001", "john@example.com"));
+
+        ResponseEntity<UserResponse> response = authController.me(httpServletRequest);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("John Doe", response.getBody().getName());
+        assertEquals("john@example.com", response.getBody().getEmail());
+    }
+
+    @Test
+    void me_throwsExceptionWhenNoToken() {
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(cookieManager.extractTokenFromCookies(httpServletRequest)).thenReturn(null);
+
+        AuthException exception = assertThrows(AuthException.class, () -> authController.me(httpServletRequest));
+
+        assertEquals("UNAUTHORIZED", exception.getCode());
+    }
+
+    @Test
+    void me_throwsExceptionWhenInvalidToken() {
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(cookieManager.extractTokenFromCookies(httpServletRequest)).thenReturn("invalid-token");
+        when(jwtUtil.validateToken("invalid-token")).thenReturn(false);
+
+        AuthException exception = assertThrows(AuthException.class, () -> authController.me(httpServletRequest));
+
+        assertEquals("UNAUTHORIZED", exception.getCode());
     }
 }
