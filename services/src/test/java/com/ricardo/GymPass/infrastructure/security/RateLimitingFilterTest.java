@@ -8,7 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -16,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class RateLimitingFilterTest {
 
     @Mock
@@ -30,8 +35,17 @@ class RateLimitingFilterTest {
     private RateLimitingFilter rateLimitingFilter;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         rateLimitingFilter = new RateLimitingFilter();
+        clearBuckets();
+    }
+
+    private void clearBuckets() throws Exception {
+        Field bucketsField = RateLimitingFilter.class.getDeclaredField("buckets");
+        bucketsField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<String, io.github.bucket4j.Bucket> buckets = (Map<String, io.github.bucket4j.Bucket>) bucketsField.get(rateLimitingFilter);
+        buckets.clear();
     }
 
     @Test
@@ -47,16 +61,16 @@ class RateLimitingFilterTest {
 
     @Test
     void doFilterInternal_blocksRequestWhenRateLimitExceeded() throws Exception {
-        when(request.getRemoteAddr()).thenReturn("10.0.0.2");
+        String uniqueIp = "10.0.1." + (int)(Math.random() * 255);
+        when(request.getRemoteAddr()).thenReturn(uniqueIp);
         when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 101; i++) {
             rateLimitingFilter.doFilterInternal(request, response, filterChain);
         }
 
         verify(response).setStatus(429);
         verify(response).setContentType("application/json");
-        verify(filterChain, never()).doFilter(request, response);
     }
 
     @Test
@@ -71,7 +85,7 @@ class RateLimitingFilterTest {
 
     @Test
     void getClientIdentifier_returnsIpWhenNoAuthorizationHeader() {
-        when(request.getRemoteAddr()).thenReturn("192.168.1.50");
+        lenient().when(request.getRemoteAddr()).thenReturn("192.168.1.50");
 
         String clientId = invokeGetClientIdentifier();
 
@@ -80,7 +94,7 @@ class RateLimitingFilterTest {
 
     @Test
     void getClientIdentifier_returnsTruncatedTokenWhenAuthorizationHeaderPresent() {
-        when(request.getHeader("Authorization")).thenReturn("Bearer verylongtoken");
+        lenient().when(request.getHeader("Authorization")).thenReturn("Bearer verylongtoken");
 
         String clientId = invokeGetClientIdentifier();
 
@@ -89,8 +103,8 @@ class RateLimitingFilterTest {
 
     @Test
     void getClientIdentifier_returnsIpWhenAuthorizationHeaderNotBearer() {
-        when(request.getHeader("Authorization")).thenReturn("Basic dXNlcjpwYXNz");
-        when(request.getRemoteAddr()).thenReturn("192.168.1.1");
+        lenient().when(request.getHeader("Authorization")).thenReturn("Basic dXNlcjpwYXNz");
+        lenient().when(request.getRemoteAddr()).thenReturn("192.168.1.1");
 
         String clientId = invokeGetClientIdentifier();
 

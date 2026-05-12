@@ -3,6 +3,7 @@ package com.ricardo.GymPass.application.service;
 import com.ricardo.GymPass.application.dto.AuthResult;
 import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
+import com.ricardo.GymPass.application.dto.UserResponse;
 import com.ricardo.GymPass.domain.entity.User;
 import com.ricardo.GymPass.domain.enums.UserRole;
 import com.ricardo.GymPass.domain.exception.AuthException;
@@ -185,5 +186,51 @@ class AuthServiceTest {
 
         AuthException exception = assertThrows(AuthException.class, () -> authService.login(request));
         assertEquals("INVALID_CREDENTIALS", exception.getCode());
+    }
+
+    @Test
+    void register_userNotFound_throwsException() {
+        RegisterRequest request = new RegisterRequest();
+        request.setExternalId("non-existent");
+        request.setEmail("test@example.com");
+        request.setPassword("password123");
+        request.setName("Test User");
+
+        when(userRepository.findByExternalId("non-existent")).thenReturn(Optional.empty());
+
+        AuthException exception = assertThrows(AuthException.class, () -> authService.register(request));
+        assertEquals("INVALID_CREDENTIALS", exception.getCode());
+    }
+
+    @Test
+    void getUser_nullId_throwsException() {
+        AuthException exception = assertThrows(AuthException.class, () -> authService.getUser(null));
+        assertEquals("UNAUTHORIZED", exception.getCode());
+    }
+
+    @Test
+    void getUser_userNotFound_throwsException() {
+        when(userRepository.findById("user-123")).thenReturn(Optional.empty());
+
+        AuthException exception = assertThrows(AuthException.class, () -> authService.getUser("user-123"));
+        assertEquals("UNAUTHORIZED", exception.getCode());
+    }
+
+    @Test
+    void getUser_success() {
+        User user = new User();
+        user.setId(1L);
+        user.setName("John Doe");
+        user.setExternalId("ext-001");
+        user.setEmail("john@example.com");
+
+        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+
+        UserResponse response = authService.getUser("1");
+
+        assertNotNull(response);
+        assertEquals("John Doe", response.getName());
+        assertEquals("ext-001", response.getExternalId());
+        assertEquals("john@example.com", response.getEmail());
     }
 }
