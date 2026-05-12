@@ -32,12 +32,12 @@ class JwtUtilTest {
     }
 
     @Test
-    void extractUserId_success() {
+    void extractId_success() {
         String token = jwtUtil.generateToken("1", "test@example.com", "MEMBER");
 
-        String userId = jwtUtil.extractUserId(token);
+        String id = jwtUtil.extractId(token);
 
-        assertEquals("1", userId);
+        assertEquals("1", id);
     }
 
     @Test

@@ -37,7 +37,7 @@ class DtoTest {
         AuthResponse response = new AuthResponse("Success", "user-123");
 
         assertEquals("Success", response.getMessage());
-        assertEquals("user-123", response.getUserId());
+        assertEquals("user-123", response.getExternalId());
     }
 
     @Test

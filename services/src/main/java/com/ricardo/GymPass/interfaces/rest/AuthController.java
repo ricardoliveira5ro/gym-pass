@@ -1,6 +1,7 @@
 package com.ricardo.GymPass.interfaces.rest;
 
 import com.ricardo.GymPass.application.dto.AuthResponse;
+import com.ricardo.GymPass.application.dto.AuthResult;
 import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
 import com.ricardo.GymPass.application.dto.UserResponse;
@@ -35,16 +36,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
-        AuthService.AuthResult result = authService.register(request);
+        AuthResult result = authService.register(request);
         setJwtCookies(result.token(), response);
-        return ResponseEntity.ok(new AuthResponse("Registration successful", result.userId()));
+        return ResponseEntity.ok(new AuthResponse("Registration successful", result.externalId()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
-        AuthService.AuthResult result = authService.login(request);
+        AuthResult result = authService.login(request);
         setJwtCookies(result.token(), response);
-        return ResponseEntity.ok(new AuthResponse("Login successful", result.userId()));
+        return ResponseEntity.ok(new AuthResponse("Login successful", result.externalId()));
     }
 
     @GetMapping("/me")
@@ -59,10 +60,10 @@ public class AuthController {
             throw new AuthException("UNAUTHORIZED", "Invalid or expired session");
         }
 
-        String userId = jwtUtil.extractUserId(token);
-        AuthService.UserResult userResult = authService.getUser(userId);
+        String id = jwtUtil.extractId(token);
+        UserResponse userResult = authService.getUser(id);
 
-        return ResponseEntity.ok(new UserResponse(userResult.name(), userResult.externalId(), userResult.email()));
+        return ResponseEntity.ok(userResult);
     }
 
     @PostMapping("/logout")

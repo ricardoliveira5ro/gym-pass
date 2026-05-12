@@ -1,5 +1,6 @@
 package com.ricardo.GymPass.application.service;
 
+import com.ricardo.GymPass.application.dto.AuthResult;
 import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
 import com.ricardo.GymPass.domain.entity.User;
@@ -63,11 +64,11 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(importedUser);
         when(jwtUtil.generateToken(anyString(), anyString(), anyString())).thenReturn("jwt-token");
 
-        AuthService.AuthResult result = authService.register(request);
+        AuthResult result = authService.register(request);
 
         assertNotNull(result);
         assertEquals("jwt-token", result.token());
-        assertEquals("1", result.userId());
+        assertEquals("ext-001", result.externalId());
         verify(userRepository).save(any(User.class));
     }
 
@@ -130,11 +131,11 @@ class AuthServiceTest {
         when(passwordEncoder.matches("password123", "encodedPassword")).thenReturn(true);
         when(jwtUtil.generateToken(anyString(), anyString(), anyString())).thenReturn("jwt-token");
 
-        AuthService.AuthResult result = authService.login(request);
+        AuthResult result = authService.login(request);
 
         assertNotNull(result);
         assertEquals("jwt-token", result.token());
-        assertEquals("1", result.userId());
+        assertEquals("ext-001", result.externalId());
     }
 
     @Test

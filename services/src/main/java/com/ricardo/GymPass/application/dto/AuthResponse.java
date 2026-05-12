@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AuthResponse {
     private String message;
-    private String userId;
+    private String externalId;
 }

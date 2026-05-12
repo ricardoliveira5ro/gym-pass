@@ -1,5 +1,6 @@
 package com.ricardo.GymPass.interfaces.rest;
 
+import com.ricardo.GymPass.application.dto.AuthResult;
 import com.ricardo.GymPass.application.service.AuthService;
 import com.ricardo.GymPass.infrastructure.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ class AuthControllerTest {
         request.setPassword("password123");
         request.setName("Test User");
 
-        when(authService.register(any())).thenReturn(new AuthService.AuthResult("jwt-token", "1"));
+        when(authService.register(any())).thenReturn(new AuthResult("jwt-token", "1"));
         when(jwtUtil.getHeaderAndPayload(anyString())).thenReturn("header.payload");
         when(jwtUtil.getSignature(anyString())).thenReturn("signature");
 
@@ -60,7 +61,7 @@ class AuthControllerTest {
         request.setExternalId("ext-001");
         request.setPassword("password123");
 
-        when(authService.login(any())).thenReturn(new AuthService.AuthResult("jwt-token", "1"));
+        when(authService.login(any())).thenReturn(new AuthResult("jwt-token", "1"));
         when(jwtUtil.getHeaderAndPayload(anyString())).thenReturn("header.payload");
         when(jwtUtil.getSignature(anyString())).thenReturn("signature");
 

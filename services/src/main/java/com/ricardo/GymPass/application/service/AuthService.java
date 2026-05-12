@@ -1,7 +1,9 @@
 package com.ricardo.GymPass.application.service;
 
+import com.ricardo.GymPass.application.dto.AuthResult;
 import com.ricardo.GymPass.application.dto.LoginRequest;
 import com.ricardo.GymPass.application.dto.RegisterRequest;
+import com.ricardo.GymPass.application.dto.UserResponse;
 import com.ricardo.GymPass.domain.entity.User;
 import com.ricardo.GymPass.domain.exception.AuthException;
 import com.ricardo.GymPass.domain.repository.UserRepository;
@@ -66,20 +68,17 @@ public class AuthService {
         return new AuthResult(token, user.getExternalId());
     }
 
-    public UserResult getUser(String userId) {
-        if (userId == null)
+    public UserResponse getUser(String id) {
+        if (id == null)
             throw new AuthException("UNAUTHORIZED", "Not authenticated");
 
-        var existingUserOpt = userRepository.findByUserId(userId);
+        var existingUserOpt = userRepository.findById(id);
 
         if (existingUserOpt.isEmpty())
             throw new AuthException("UNAUTHORIZED", "Not authenticated");
 
         User user = existingUserOpt.get();
 
-        return new UserResult(user.getName(), user.getExternalId(), user.getEmail());
+        return new UserResponse(user.getName(), user.getExternalId(), user.getEmail());
     }
-
-    public record AuthResult(String token, String externalId) {}
-    public record UserResult(String name, String externalId, String email) {}
 }
