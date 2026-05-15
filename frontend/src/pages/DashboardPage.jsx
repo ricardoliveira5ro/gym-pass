@@ -203,47 +203,6 @@ function DashboardPage() {
             <p className="text-2xl font-heading font-bold text-on-surface">{mockStats.totalCheckIns}</p>
           </div>
         </div>
-
-        <div className="animate-fade-up" style={{ animationDelay: '600ms', animationFillMode: 'forwards', opacity: 0 }}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-heading font-bold text-on-surface">{t('recentActivity')}</h2>
-          </div>
-          
-          <div className="space-y-3">
-            {mockActivity.map((activity, index) => (
-              <div 
-                key={activity.id}
-                className="relative flex items-center gap-4 p-4 rounded-xl bg-surface-card/60 backdrop-blur-xl border border-white/[0.04] hover:border-white/[0.08] transition-all duration-200 group"
-              >
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary/30 rounded-full group-hover:bg-primary/60 transition-colors" />
-                
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-on-surface">{activity.gym}</p>
-                  <p className="text-xs text-on-surface-muted">{activity.time}</p>
-                </div>
-                
-                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                  <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 animate-fade-up" style={{ animationDelay: '700ms', animationFillMode: 'forwards', opacity: 0 }}>
-          <div className="flex items-center justify-center gap-2 text-on-surface-muted/30">
-            <div className="w-1 h-1 rounded-full bg-primary" />
-            <span className="text-xs font-medium tracking-widest uppercase">GymPass</span>
-          </div>
-        </div>
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2 bg-gradient-to-t from-surface via-surface/95 to-transparent">
