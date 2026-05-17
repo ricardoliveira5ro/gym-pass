@@ -206,29 +206,33 @@ function DashboardPage() {
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2 bg-gradient-to-t from-surface via-surface/95 to-transparent">
-        <div className="flex items-center justify-around p-2 rounded-2xl bg-surface-card/90 backdrop-blur-2xl border border-white/[0.08]">
-          <button 
-            onClick={() => setActiveTab('home')}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${activeTab === 'home' ? 'text-primary' : 'text-on-surface-muted hover:text-on-surface'}`}
-          >
-            <svg className="w-5 h-5" fill={activeTab === 'home' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span className="text-xs font-medium">Home</span>
-          </button>
+        <div className="grid grid-cols-5 items-center p-2 rounded-2xl bg-surface-card/90 backdrop-blur-2xl border border-white/[0.08]">
+          <div className="flex justify-center">
+            <button 
+              onClick={() => setActiveTab('home')}
+              className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all duration-200 ${activeTab === 'home' ? 'text-primary' : 'text-on-surface-muted hover:text-on-surface'}`}
+            >
+              <svg className="w-5 h-5" fill={activeTab === 'home' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span className="text-xs font-medium">Home</span>
+            </button>
+          </div>
 
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-xs font-medium">{t('gyms')}</span>
-          </button>
+          <div className="flex justify-center">
+            <button 
+              onClick={() => {}}
+              className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="text-xs font-medium">{t('gyms')}</span>
+            </button>
+          </div>
 
-          <div className="relative -mt-6">
+          <div className="flex justify-center -mt-6">
             <button 
               onClick={() => {}}
               className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-105 transition-all duration-200"
@@ -239,25 +243,29 @@ function DashboardPage() {
             </button>
           </div>
 
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            <span className="text-xs font-medium">{t('alerts')}</span>
-          </button>
+          <div className="flex justify-center">
+            <button 
+              onClick={() => {}}
+              className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span className="text-xs font-medium">{t('alerts')}</span>
+            </button>
+          </div>
 
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-xs font-medium">{t('account')}</span>
-          </button>
+          <div className="flex justify-center">
+            <button 
+              onClick={() => {}}
+              className="flex flex-col items-center gap-1 px-2 py-2 rounded-xl text-on-surface-muted hover:text-on-surface transition-all duration-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className="text-xs font-medium">{t('account')}</span>
+            </button>
+          </div>
         </div>
       </div>
 
